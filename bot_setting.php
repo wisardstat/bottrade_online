@@ -65,6 +65,7 @@ if ($result->num_rows > 0) {
 	$userclose_p  = $row["userclose_p"];
 	$order_active = $row["order_active"];
 	$over_bolling = $row["over_bolling"];
+	$time_frame = $row["time_frame"];
     }
   }
   
@@ -256,6 +257,24 @@ if ($result->num_rows > 0) {
 	<div class="border-top"></div>
 	<div class="pt-2"> 
 		 <label class="main-content-label tx-13  text-primary"> <i class="fe fe-settings"></i> User Action</label>
+		 
+		<?php $col_name = "time_frame";  ?>
+		<div class="row row-xs align-items-center mg-b-20">
+			<div class="col-4">
+				<label class="mg-b-0"> <?php echo $col_name; ?> </label>
+			</div>
+			<div class="col-4 mg-t-5 mg-md-t-0">
+				<input class="form-control" placeholder="" type="text" value="<?php echo $time_frame; ?>" id="<?php echo $col_name; ?>" name="<?php echo $col_name; ?>" >
+			</div>
+			<div class="col-4 mg-t-5 mg-md-t-0">
+				<div class="row" >
+				<button class="btn ripple btn-outline-primary btn-icon ml-4 mr-2" onclick="return add('<?php echo $col_name; ?>','+');"  ><i class="fa fa-plus"></i></button>
+				<button class="btn ripple btn-outline-primary btn-icon" onclick="return add('<?php echo $col_name; ?>','-');"  ><i class="fa fa-minus"></i></button>
+				</div>
+			</div>
+		</div>
+		
+		
 		<?php $col_name = "userclose_p";  ?>
 		<div class="row row-xs align-items-center mg-b-20">
 			<div class="col-4">

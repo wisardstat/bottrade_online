@@ -38,7 +38,7 @@
    }
     
 	$sql = get_all_get(); 
-	 
+	//echo $sql;
 	
 	$servername = "localhost";
 	$username = "root";

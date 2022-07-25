@@ -50,11 +50,51 @@
 			</div>
 		</div>
 	</div>
+	
+	<div class="row row-sm mt-8 text-left">
+	
+		<div class="col-md-4 col-sm-6 col-lg-3">
+			<div class="card custom-card">
+				<div class="card-body pb-3">
+				
+					<h5 class="tx-16">Total Profit</h5>
+					<div class="d-flex">
+						<div class="">
+							<h4 id="profit_amt" class="text-primary font-weight-bold mb-2">0</h4>
+							<div class="d-flex ml-auto float-right tx-12">
+								Lot = 1 / Leverage =20
+							</div>
+						</div>
+						 
+					</div>
+				</div>
+			</div> 
+		</div> 
+		
+		<div class="col-md-4 col-sm-6 col-lg-3">
+			<div class="card custom-card">
+				<div class="card-body pb-3">
+					<h5 class="tx-16">WIN Rate</h5>
+					<div class="d-flex">
+						<div class=""> 
+							<h4 id="win_rate" class="text-primary font-weight-bold mb-2">0%</h4>
+							<span class='p-0 tx-12'> 
+									Win= <span id="win_cnt"> 0 </span> / Loss = <span id="loss_cnt"> 2 </span>
+							</span>
+						</div>
+						<div class="d-flex ml-auto float-right tx-12">
+							<canvas id="btc-market" class="wd-50p wd-100-f ml-auto float-right"></canvas>
+						</div>
+					</div>
+				</div>
+			</div> 
+		</div> 
+	</div><!--/row-->
  
  
 <!---- # START - CONFIG-SECTION # -----> 
-	<div class="row row-sm mt-8">
-		  
+	<div class="row row-sm mt-8 text-left"> 
+	
 			<div class="card custom-card col-12 p-2">
 				 
 				<div class="card-body text-left p-2">
@@ -63,57 +103,6 @@
 						<p class="text-muted  card-sub-title">ประวัติการทำกำไรของบอท </p>
 					</div>
 					
-					<div class="row">
-					
-						<div class="col-md-4 col-sm-6 col-lg-3">
-							<div class="card custom-card text-white bg-primary">
-								<div class="card-body ">
-									<div class="card-item"> 
-								 
-										<div class="card-item-title mb-2">
-									
-											<label class="main-content-label tx-13 font-weight-bold mb-1">Total Profit</label>
-									
-										</div>
-										<div class="card-item-body">
-											<div class="card-item-stat">
-												<h4 id="profit_amt" class="font-weight-bold">0</h4>
-												<span class='p-0 tx-12 text-white' > Lot = 1 and Leverage =20 </span> 
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						
-						<div class="col-md-4 col-sm-6 col-lg-3">
-							<div class="card custom-card text-white bg-primary">
-								<div class="card-body ">
-									<div class="card-item"> 
-								 
-										<div class="card-item-title mb-2">
-									
-											<label class="main-content-label tx-13 font-weight-bold mb-1">WIN Rate</label>
-									
-										</div>
-										<div class="card-item-body">
-											<div class="card-item-stat">
-												<h4 id="win_rate" class="font-weight-bold">0%</h4>
-												<span class='p-0 tx-12 text-white' > 
-													Win= <span id="win_cnt"> 0 </span> / Loss = <span id="loss_cnt"> 2 </span> 
-												
-												</span>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						
-						
-						
-					</div>
-				 
 					 <div class='table-responsive ' >
 						<table class='table text-nowrap tx-12 '  id="example1" >
 							<thead class='text-center'>
