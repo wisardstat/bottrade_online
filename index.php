@@ -2,7 +2,7 @@
     include("header.php");
 	
 	
-	 echo "<script>window.location = 'bot.php'</script>";
+	 echo "<script>window.location = 'home.php'</script>";
 ?>
 
 <?php 

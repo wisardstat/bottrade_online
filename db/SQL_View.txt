@@ -1,0 +1,10 @@
+
+alter view vsetup_user_temp as 
+SELECT s.* 
+,u.user_name
+,u.user_role
+,t.buy_f,t.sell_f,t.wait_f,t.last_update,t.big_f,t.op_price
+FROM tb_setup s
+left join tb_users u on s.user_id=u.user_id
+left JOIN tb_temp t on s.seq = t.seq
+WHERE 1

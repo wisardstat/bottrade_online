@@ -1,41 +1,22 @@
 
 <?php 
-    include("header2.php");
+    include("header.php");
+	//include 'Class/Database.php';
 	
-	$servername = "localhost";
-	$username = "root";
-	$password = "matrix2805";
-	$dbname = "botplus";
+	$db = new DatabaseManage;
+	$db->connect();
 	 
-	$conn = new mysqli($servername, $username, $password, $dbname);
-	 
-	if ($conn->connect_error) {
-	  die("Connection failed: " . $conn->connect_error);
-	}
-	
 	$user_id = $_GET["u"];
 	$stg = $_GET["stg"];
 	$seq = $_GET["s"];
 	
-	$title="";
-	if (strtoupper($stg)=="EMA")
-	{
-		$title = "EMA CROSS"; 
-	}		
-	
-	if (strtoupper($stg)=="BB")
-	{
-		$title = "Bolling Band"; 
-	}
-	
-	$sql = "SELECT * FROM order_history where seq=".$seq."  order by  order_date desc "; 
-	$result = $conn->query($sql);
- 
+	$title=""; 
+	$result = $db->selectAllData(" vorderhistory " ,'*'," seq=".$seq." order by  order_date desc ");
 ?>
 	
   <div class="page-header">
 		<div>
-			<h4 class="main-content-title mg-b-5"> <?php echo $title; ?> </h4>
+			<h4 class="main-content-title mg-b-5" id='etitle'>   </h4>
 		</div>
 		<div class="d-flex">
 			<div class="justify-content-center">
@@ -55,12 +36,12 @@
 	
 		<div class="col-md-4 col-sm-6 col-lg-3">
 			<div class="card custom-card">
-				<div class="card-body pb-3">
+				<div class="card-body pb-3 tx-robo-b">
 				
 					<h5 class="tx-16">Total Profit</h5>
 					<div class="d-flex">
 						<div class="">
-							<h4 id="profit_amt" class="text-primary font-weight-bold mb-2">0</h4>
+							<h4 id="profit_amt" class="text-primary font-weight-bold mb-2 ">0</h4>
 							<div class="d-flex ml-auto float-right tx-12">
 								Lot = 1 / Leverage =20
 							</div>
@@ -73,7 +54,7 @@
 		
 		<div class="col-md-4 col-sm-6 col-lg-3">
 			<div class="card custom-card">
-				<div class="card-body pb-3">
+				<div class="card-body pb-3 tx-robo-b">
 					<h5 class="tx-16">WIN Rate</h5>
 					<div class="d-flex">
 						<div class=""> 
@@ -104,7 +85,7 @@
 					</div>
 					
 					 <div class='table-responsive ' >
-						<table class='table text-nowrap tx-12 '  id="example1" >
+						<table class='table text-nowrap tx-12 tx-robo-b '  id="example1" >
 							<thead class='text-center'>
 								<th>Open <br/> Date</th>
 								<th>Order <br/> Type</th>
@@ -120,12 +101,11 @@
 						
 
  <?php
-	 
-if ($result->num_rows > 0) {
+ 
   $total_profit = 0 ;
   $total_win = 0 ;
   $total_row = 0 ;
-  while($row = $result->fetch_assoc()) {
+  foreach ($result as $row) {
 
 	$total_row += 1;
   
@@ -138,6 +118,7 @@ if ($result->num_rows > 0) {
 	$close_price = $row["close_price"];
 	$last_update   =substr( $row["last_update"],0,16);
 	$remark   = $row["remark"];
+	$title    = $row["stg_nm"];
 	
 	$status = "";
 	$profit = 0.00;
@@ -197,9 +178,7 @@ if ($result->num_rows > 0) {
 	
 	echo "<tr class='".$color ."'> <td>".$order_date."</td> <td>".$order_type."</td> <td>".$symbol."</td><td class='text-center'>".$open_price."</td><td class='text-center'>".$close_price."</td><td class='text-center'>".$profit_txt."</td><td class='text-center'>".$profit_amt_txt."</td><td>".$last_update."</td><td>".$remark."</td> </tr>";
 	
-    }
   } 
- 
  ?>
 				</tbody>
 				</table>
@@ -216,10 +195,9 @@ if ($result->num_rows > 0) {
 
 $('#example1').DataTable({
 		  order: [[0, 'desc']],
-		 
 	});
 	
-	
+	$('#etitle').html(" <?php echo $title ;?>");
 	$('#profit_amt').html("$ <?php echo $total_profit ;?>");
 	
 	$('#win_cnt').html(" <?php echo $total_win ;?>");

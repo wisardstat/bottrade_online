@@ -1,58 +1,38 @@
 
 <?php 
     include("header.php");
+	//include 'Class/Database.php';
 	
-	$servername = "localhost";
-	$username = "root";
-	$password = "matrix2805";
-	$dbname = "botplus";
-	 
-	$conn = new mysqli($servername, $username, $password, $dbname);
-	 
-	if ($conn->connect_error) {
-	  die("Connection failed: " . $conn->connect_error);
-	}
-
+	$db = new DatabaseManage;
+	$db->connect();
+	
 	$seq = $_GET["s"];
-	$stg = $_GET["stg"];
-	$sql = "SELECT * FROM tb_setup where seq=".$seq." "; 
-	$result = $conn->query($sql);
+	$result = $db->selectAllData(" tb_setup " ,'*'," seq=".$seq." ");
+	$result_stg = $db->selectAllData(" ref_strategy " ,'*'," 1=1 ");
 	
-	$title="";
-	if ($stg=="ema")
-	{
-		$title = "EMA CROSS"; 
-	}		
-	
-	if ($stg=="bb")
-	{
-		$title = "Bolling Band"; 
-	}
- 
+	$title=""; 
 ?>
-	 
- 
- 
+
+<br/>
 <!---- # START - CONFIG-SECTION # ----->
- <form action="bot_config_update.php" method="get"> 
-	<div class="row row-sm mt-8">
-		 
-		<div class="col-md-12">
+ <form action="db_update.php?act=up_config" method="get"> 
+	<div class="row row-sm mt-10 tx-baac">
+		 <br/>
+		<div class="col-md-12 mt-10">
 			<div class="card custom-card">
 				<div class="card-body text-left">
 				 
 					<div>
-						<h6 class="main-content-label tx-20 mb-3 text-danger"><i class="fe fe-settings mr-2"></i> <?php echo $title; ?> </h6>
+						<h6 class="main-content-label tx-20 mb-3 text-danger tx-robo-b"><i class="fe fe-settings mr-2"></i> <span id='etitle'></span> </h6>
 					</div> 
 					
 					<input type="hidden" value="config" id="file_type" name="file_type" >
 
  <?php
-	 
-if ($result->num_rows > 0) {
-  
-  while($row = $result->fetch_assoc()) {	
-  
+    $order_active_chk="";
+	$stg_active_chk="";
+   foreach ($result as $row) { 	
+	$title   = $row["setup_name"];
 	$wait_p  = $row["wait_p"];
 	$close_p = $row["close_p"];
 	$gap_p   = $row["gap_p"];
@@ -66,17 +46,51 @@ if ($result->num_rows > 0) {
 	$order_active = $row["order_active"];
 	$over_bolling = $row["over_bolling"];
 	$time_frame = $row["time_frame"];
-    }
+	$stg_active = $row["stg_active"];
+	$stg_code = $row["stg_code"];
+	
+	$symbol   = $row["symbol"];
+	$setup_name   = $row["setup_name"];
+	
+	$stg_code = $row["stg_code"];
+	$stg = $row["stg_code"];
+	
+	if ($order_active==1)
+	{
+		$order_active_chk="checked";
+	}
+	
+	if ($stg_active=="Y")
+	{
+		$stg_active_chk="checked";
+	}
+    
   }
   
-  
-   
- 
  ?>
    <div class="border-top"></div>
 		<div class="pt-2"> 
 			 <label class="main-content-label tx-13  text-primary "> <i class="fe fe-settings"></i> Strategy Setting </label>
 			 
+ 			 <input class="form-control" placeholder="" type="hidden" value="up_config" id="act" name="act" >
+			  <input class="form-control" placeholder="" type="hidden" value="" id="title" name="title" >
+		
+			<?php $col_name = "setup_name";  ?>
+			<div class="row row-xs align-items-center mg-b-20">
+				<div class="col-4">
+					<label class="mg-b-0"> ชื่อบอท / Bot Name </label>
+				</div>
+				<div class="col-4 mg-t-5 mg-md-t-0">
+					<input class="form-control" placeholder="" type="text" value="<?php echo $setup_name; ?>" id="<?php echo $col_name; ?>" name="<?php echo $col_name; ?>" >
+				</div>
+				<div class="col-4 mg-t-5 mg-md-t-0">
+					<div class="row" >
+					<button class="btn ripple btn-outline-primary btn-icon ml-4 mr-2" onclick="return add('<?php echo $col_name; ?>','+');"  ><i class="fa fa-plus"></i></button>
+					<button class="btn ripple btn-outline-primary btn-icon" onclick="return add('<?php echo $col_name; ?>','-');"  ><i class="fa fa-minus"></i></button>
+					</div>
+				</div>
+			</div>
+			
 		<?php if ($stg=="ema") { ?>
 			<div class="row row-xs align-items-center mg-b-20">
 				<div class="col-4">
@@ -126,6 +140,8 @@ if ($result->num_rows > 0) {
 				</div>
 			</div>
 		<?php } ?>
+		
+		
 		
 		<?php if ($stg=="bb") { ?>
 			<?php $col_name = "sw_max";  ?>
@@ -177,6 +193,45 @@ if ($result->num_rows > 0) {
 				</div>
 			</div>
 		<?php } ?>
+		
+		
+		<?php if ($stg=="adx") { ?>
+			<?php $col_name = "sw_max";  ?>
+			<div class="row row-xs align-items-center mg-b-20">
+				<div class="col-4">
+					<label class="mg-b-0"> <?php echo $col_name; ?> </label>
+				</div>
+				<div class="col-4 mg-t-5 mg-md-t-0">
+					<input class="form-control" placeholder="" type="text" value="<?php echo $sw_max; ?>" id="<?php echo $col_name; ?>" name="<?php echo $col_name; ?>" >
+				</div>
+				<div class="col-4 mg-t-5 mg-md-t-0">
+					<div class="row" >
+					<button class="btn ripple btn-outline-primary btn-icon ml-4 mr-2" onclick="return add('<?php echo $col_name; ?>','+');"  ><i class="fa fa-plus"></i></button>
+					<button class="btn ripple btn-outline-primary btn-icon" onclick="return add('<?php echo $col_name; ?>','-');"  ><i class="fa fa-minus"></i></button>
+					</div>
+				</div>
+			</div>
+		 
+			<?php $col_name = "sw_min";  ?>
+			<div class="row row-xs align-items-center mg-b-20">
+				<div class="col-4">
+					<label class="mg-b-0"> <?php echo $col_name; ?> </label>
+				</div>
+				<div class="col-4 mg-t-5 mg-md-t-0">
+					<input class="form-control" placeholder="" type="text" value="<?php echo $sw_min; ?>" id="<?php echo $col_name; ?>" name="<?php echo $col_name; ?>" >
+				</div>
+				<div class="col-4 mg-t-5 mg-md-t-0">
+					<div class="row" >
+					<button class="btn ripple btn-outline-primary btn-icon ml-4 mr-2" onclick="return add('<?php echo $col_name; ?>','+');"  ><i class="fa fa-plus"></i></button>
+					<button class="btn ripple btn-outline-primary btn-icon" onclick="return add('<?php echo $col_name; ?>','-');"  ><i class="fa fa-minus"></i></button>
+					</div>
+				</div>
+			</div>
+		 
+		<?php } ?>
+		
+		
+		
 	</div>
 	
 	<div class="border-top"></div>
@@ -258,21 +313,81 @@ if ($result->num_rows > 0) {
 	<div class="pt-2"> 
 		 <label class="main-content-label tx-13  text-primary"> <i class="fe fe-settings"></i> User Action</label>
 		 
-		<?php $col_name = "time_frame";  ?>
+		 
+		 
+		<?php $col_name = "symbol";  ?>
+		<div class="row row-xs align-items-center mg-b-20">
+			<div class="col-4">
+				<label class="mg-b-0"> ชนิดของเหรียญ <br/> Symbol </label>
+			</div>
+			<div class="col-4 mg-t-5 mg-md-t-0">
+				<input class="form-control" placeholder="" type="text" value="<?php echo $symbol; ?>" id="<?php echo $col_name; ?>" name="<?php echo $col_name; ?>" >
+			</div>
+			 
+		</div>
+		
+		<?php $col_name = "stg_code";  ?>
+		<div class="row row-xs align-items-center mg-b-20">
+			<div class="col-4">
+				<label class="mg-b-0"> กลยุทธ์ของบอท <br/> BOT Strategy </label>
+			</div>
+			<div class="col-4 mg-t-5 mg-md-t-0">
+				<div class="form-group">
+					<select  class="form-control select "  id="<?php echo $col_name; ?>" name="<?php echo $col_name; ?>"   >
+					<?php
+						foreach ($result_stg as $row) { 
+							if ($row['stg_code']==$stg_code)
+							{
+								echo '<option value="'.$row['stg_code'].'" selected>'.$row['stg_nm'].'</option>';
+							}
+							else{
+								echo '<option value="'.$row['stg_code'].'">'.$row['stg_nm'].'</option>';
+							}
+						}
+					?>
+					</select>
+				</div>
+			</div>
+			 
+		</div>
+		
+		 
+		<?php $col_name = "time_frame";
+
+			$tf_5mins = "";
+			$tf_15mins = "";
+			$ts_30mins = "";
+			
+			switch ($time_frame) {
+				case "5":
+					$tf_5mins = "selected";
+					break;
+				case "15":
+					$tf_15mins = "selected";
+					break;
+				case "30":
+					$tf_30mins = "selected";
+					break;
+			}
+		?>
 		<div class="row row-xs align-items-center mg-b-20">
 			<div class="col-4">
 				<label class="mg-b-0"> <?php echo $col_name; ?> </label>
 			</div>
-			<div class="col-4 mg-t-5 mg-md-t-0">
-				<input class="form-control" placeholder="" type="text" value="<?php echo $time_frame; ?>" id="<?php echo $col_name; ?>" name="<?php echo $col_name; ?>" >
-			</div>
-			<div class="col-4 mg-t-5 mg-md-t-0">
-				<div class="row" >
-				<button class="btn ripple btn-outline-primary btn-icon ml-4 mr-2" onclick="return add('<?php echo $col_name; ?>','+');"  ><i class="fa fa-plus"></i></button>
-				<button class="btn ripple btn-outline-primary btn-icon" onclick="return add('<?php echo $col_name; ?>','-');"  ><i class="fa fa-minus"></i></button>
+			<div class="col-6 mg-t-5 mg-md-t-0">
+				
+				<div class="form-group">
+					<select  class="form-control select "  id="<?php echo $col_name; ?>" name="<?php echo $col_name; ?>"   >
+					   <option value='5' <?php echo $tf_5mins ; ?> >5 minutes</option>
+					   <option value='15' <?php echo $tf_15mins ; ?> >15 minutes</option>
+					    <option value='30' <?php echo $tf_30mins ; ?> >30 minutes</option>
+					</select>
 				</div>
+				 
 			</div>
+			 
 		</div>
+		
 		
 		
 		<?php $col_name = "userclose_p";  ?>
@@ -294,27 +409,48 @@ if ($result->num_rows > 0) {
 		<?php $col_name = "order_active";  ?>
 		<div class="row row-xs align-items-center mg-b-20">
 			<div class="col-4">
-				<label class="mg-b-0"> <?php echo $col_name; ?> </label>
+				<label class="mg-b-0">  อนุญาติให้มีการซื้อขายบนกระดานเทรด <br/> (order_active) </label>
 			</div>
 			<div class="col-4 mg-t-5 mg-md-t-0">
-				<input class="form-control" placeholder="" type="text" value="<?php echo $order_active; ?>" id="<?php echo $col_name; ?>" name="<?php echo $col_name; ?>" >
-			</div>
-			<div class="col-4 mg-t-5 mg-md-t-0">
-				<div class="row" >
-				<button class="btn ripple btn-outline-primary btn-icon ml-4 mr-2" onclick="return add('<?php echo $col_name; ?>','+');"  ><i class="fa fa-plus"></i></button>
-				<button class="btn ripple btn-outline-primary btn-icon" onclick="return add('<?php echo $col_name; ?>','-');"  ><i class="fa fa-minus"></i></button>
-				</div>
+				 
+				<label class="custom-switch">
+					<input type="checkbox"  class="custom-switch-input"  id="<?php echo $col_name; ?>" name="<?php echo $col_name; ?>" <?php echo $order_active_chk; ?> >
+					<span class="custom-switch-indicator"></span>
+					 
+				</label>
 			</div>
 		</div>
+		
+		<?php $col_name = "stg_active";  ?>
+		<div class="row row-xs align-items-center mg-b-20">
+			<div class="col-4">
+				<label class="mg-b-0"> เปิดการทำงานของบอท <br/>(stg_active)  </label>
+			</div>
+			<div class="col-4 mg-t-5 mg-md-t-0">
+				 
+				<label class="custom-switch">
+					<input type="checkbox"  class="custom-switch-input"  id="<?php echo $col_name; ?>" name="<?php echo $col_name; ?>" <?php echo $stg_active_chk; ?> >
+					<span class="custom-switch-indicator"></span>
+					 
+				</label>
+			</div>
+		</div>
+		 
+		
 	</div>
 	<input class="form-control" placeholder="" type="hidden" value="<?php echo $seq; ?>" id="seq" name="seq" >
 
 	</form>
-				<div class="row text-center" >
-					<button class="btn ripple btn-primary col-12 mb-2" type="submit" >Update</button>
-					
-					<a href="home.php" class="btn ripple btn-dark col-12"   >Cancel</a>
-				</div>
+				 
+					<div class="row text-center mt-5" >
+						<div class="col-md-6 col-sm-12">
+							<button class="btn ripple btn-primary col-12 mb-2" type="submit" >Update</button>
+						</div>
+						<div class="col-md-6 col-sm-12">
+							<a href="home.php" class="btn ripple btn-dark col-12" >Cancel</a>
+						</div>
+					</div>
+				 
 				</div><!--card-body -->
 			</div><!--card -->
 		</div><!--col-12 -->
@@ -330,7 +466,8 @@ if ($result->num_rows > 0) {
 ?>
 
 <script language="javascript">
-	   
+	   $('#etitle').html("<?php echo $title ;?>");
+	   $('#title').val("<?php echo $title ;?>");
 	
 </script>
 
