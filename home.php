@@ -33,17 +33,23 @@
 
 	$(document).ready(function(){  
 	
+		ShowTime();
+		LoadBotList();
+	}) 
+	
+	function ShowTime()
+	{
 		var today = new Date();
 		var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
 		var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 		var dateTime = date+' '+time;
 		
 		$('.time_update').html(dateTime); 
-		LoadBotList();
-	}) 
+	}
 	
 	function LoadBotList()
 	{	
+		ShowTime();
 		$('.load_bot').html('<div class="text-center"> <div class="spinner-border text-warning" role="status"> <span class="sr-only">Loading...</span></div> </div>');
         var url = "load_home.php"; 
         $.post(url, function (result) {
@@ -53,7 +59,6 @@
             }
             else {
                 alert("Error!!");
-
             }
         }); 
 	}
