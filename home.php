@@ -60,7 +60,8 @@
 	 
 	function Refresh()
 	{
-		 window.location.reload(1);
+		LoadBotList();
+		 //window.location.reload(1);
 	}
 	
 	setTimeout(function(){
